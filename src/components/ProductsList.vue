@@ -18,36 +18,10 @@ export default {
 	firebase: {
 		products: db.ref('products')
 	},
-	data () {
-		return {
-//			products: [
-//				{
-//					code: "123",
-//					name: "Jabłko",
-//					price: 10,
-//					url: ""
-//				},
-//				{
-//					code: "234",
-//					name: "Kawa",
-//					price: 9.50,
-//					url: ""
-//				},
-//				{
-//					code: "345",
-//					name: "Ziemniak",
-//					price: 5.10,
-//					url: ""
-//				}
-//			]
-		}
-	},
 	methods: {
 	}
 }
 </script>
 
 <style scoped>
-
-
 </style>

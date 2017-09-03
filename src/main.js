@@ -6,11 +6,14 @@ import router from './router'
 import VueFire from 'vuefire'
 import Navbar from '@/components/Navbar'
 import BootstrapVue from 'bootstrap-vue'
+import VeeValidate from 'vee-validate';
 
 
 Vue.use(BootstrapVue);
 
 Vue.use(VueFire)
+
+Vue.use(VeeValidate);
 
 Vue.config.productionTip = false
 

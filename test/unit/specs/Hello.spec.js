@@ -1,11 +1,11 @@
 import Vue from 'vue'
-import Hello from '@/components/Hello'
+import Hello from '@/components/SingleProduct'
 
-describe('Hello.vue', () => {
-  it('should render correct contents', () => {
-    const Constructor = Vue.extend(Hello)
-    const vm = new Constructor().$mount()
-    expect(vm.$el.querySelector('.hello h1').textContent)
-      .to.equal('Welcome to Your Vue.js App')
-  })
+describe('SingleProduct.vue', () => {
+	it('Should render:', () => {
+		const Constructor = Vue.extend(SingleProduct)
+		const vm = new Constructor().$mount()
+		expect(vm.$el.querySelector('.card').textContent)
+			.to.equal('Welcome to Your Vue.js App')
+	})
 })

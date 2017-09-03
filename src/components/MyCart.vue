@@ -47,7 +47,6 @@
 				</tbody>
 			</table>
 			<div class="container">
-
 			TOTAL: {{cart.summary}}
 				<b-button variant="success" id="success" @click="checkout" :disabled="cart.products.length<1">Checkout</b-button>
 			</div>

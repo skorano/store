@@ -21,66 +21,64 @@
 				</tbody>
 			</table>
 		</b-row>
-		<b-form @submit.prevent="onSubmit" validated>
+		<b-form @submit.prevent="validateBeforeSubmit" validated>
 		<b-row>
 				<b-col>
 					<h3>Order to:</h3>
 					<b-form-group
-												label="Name:" label-for="formName"
-												description="Place your name here.">
-					<b-form-input id="nameForm"
-													type="text" v-model="form.name" required
-													placeholder="Your name"></b-form-input>
+						label="Name:">
+					<b-form-input id="nameForm"  v-validate="'required|alpha_spaces'" name="name"
+							type="text" v-model="form.name" required
+							placeholder="Your name"></b-form-input>
+						<div class="invalid-feedback" v-show="errors.has('form.name')" >
+						<span v-show="errors.has('name')" class="help is-danger">{{ errors.first('name') }}</span></div>
 					</b-form-group>
 					<b-form-group
-												label="Last Name:" label-for="formLastname"
-												description="Place your Last Name here.">
-						<b-form-input id="formLastname"
-													type="text" v-model="form.lastname" required
-													placeholder="Your Last Name"></b-form-input>
+						label="Last Name:">
+						<b-form-input v-validate="'required|alpha_spaces'"  name="lastname"
+							id="formLastname"
+							type="text" v-model="form.lastname" required
+							placeholder="Your Last Name"></b-form-input>
+							<div class="invalid-feedback" v-show="errors.has('form.lastname')" ><span v-show="errors.has('lastname')" class="help is-danger">{{ errors.first('lastname') }}</span></div>
 					</b-form-group>
 					<b-form-group
-												label="E-mail:" label-for="formEmail"
-												description="Place your email here.">
-						<b-form-input id="formEmail"
-													type="email" v-model="form.email" required
-													placeholder="email@example.com"></b-form-input>
+						label="E-mail:">
+					<b-form-input  v-validate="'required|email'"  name="email"
+								id="formEmail"
+								type="email" v-model="form.email" required
+								placeholder="email@example.com"></b-form-input>
+						<div class="invalid-feedback" v-show="errors.has('form.email')" ><span v-show="errors.has('email')" class="help is-danger">{{ errors.first('email') }}</span></div>
 					</b-form-group>
 				</b-col>
 				<b-col>
 					<h3>Shipping address:</h3>
 					<b-form-group
-												label="Street:" label-for="formStreet"
-												description="Place your street here.">
-						<b-form-input id="formStreet"
-													type="text" v-model="form.street" required
-													placeholder="Your street"></b-form-input>
+						label="Street and house number:">
+						<b-form-input id="formStreet" v-validate="'required|min:3'" name="street"
+							type="text" v-model="form.street" required
+							placeholder="Your street"></b-form-input>
+						<div class="invalid-feedback" v-show="errors.has('form.street')" ><span v-show="errors.has('street')" class="help is-danger">{{ errors.first('street') }}</span></div>
 					</b-form-group>
 					<b-form-group
-												label="Number:" label-for="formNumber"
-												description="Place your home number here.">
-						<b-form-input id="formNumber"
-													type="text" v-model="form.number" required
-													placeholder="Your home number"></b-form-input>
+							label="Phone:">
+						<b-form-input id="formNumber"  v-validate="'required|min:6|numeric'" name="number"
+							type="text" v-model="form.number" required
+							placeholder="Your home number"></b-form-input>
+						<div class="invalid-feedback" v-show="errors.has('form.number')" ><span v-show="errors.has('number')" class="help is-danger">{{ errors.first('number') }}</span></div>
 					</b-form-group>
 					<b-form-group
-												label="City:" label-for="formCity"
-												description="Place your city here.">
-						<b-form-input id="formCity"
-													type="text" v-model="form.city" required
-													placeholder="Your City"></b-form-input>
+						label="City:">
+						<b-form-input id="formCity"  v-validate="'required|min:3|alpha_spaces'" name="city"
+						type="text" v-model="form.city" required
+						placeholder="Your City"></b-form-input>
+						<div class="invalid-feedback" v-show="errors.has('form.city')" ><span v-show="errors.has('city')" class="help is-danger">{{ errors.first('city') }}</span></div>
 					</b-form-group>
 					<b-form-group
-												label="Postal code:" label-for="formPostal"
-												description="Place your postal code here.">
-						<b-form-input id="formPostal"
-													type="text" v-model="form.postal" required
-													placeholder="Your postal code"></b-form-input>
-					</b-form-group>
-					<b-form-group id="exampleGroup4">
-						<b-form-checkbox v-model="form.agreement" id="form.agreement">
-							Check me out
-						</b-form-checkbox>
+						label="Postal code:">
+						<b-form-input id="formPostal" v-validate="'required|min:3'" name="postal"
+							type="text" v-model="form.postal" required
+							placeholder="Your postal code"></b-form-input>
+						<div class="invalid-feedback" v-show="errors.has('form.postal')" ><span v-show="errors.has('postal')" class="help is-danger">{{ errors.first('postal') }}</span></div>
 					</b-form-group>
 					<b-button v-b-modal.orderPlaced type="submit" variant="primary" :disabled="cart.products.length<1 ">Submit</b-button>
 					<b-button type="reset" variant="secondary">Reset</b-button>
@@ -131,6 +129,10 @@
 
 <script>
 
+
+
+import VeeValidate from 'vee-validate';
+
 import cart from '../shared/cart.js'
 import {db} from '../shared/db'
 let dateFormat = require('dateformat');
@@ -160,6 +162,7 @@ export default {
 	},
 	data () {
 		return {
+			email: "",
 			cart: cart.data,
 			name: "",
 			form: new Order
@@ -185,6 +188,13 @@ export default {
 			let local = new Date(date);
 			local.setMinutes(date.getMinutes() - date.getTimezoneOffset());
 			return local.toJSON().slice(0, 10);
+		},
+		validateBeforeSubmit() {
+			this.$validator.validateAll().then((result) => {
+			if (result) {
+				this.onSubmit();
+			}
+			});
 		}
 	},
 	created(){

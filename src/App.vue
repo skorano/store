@@ -55,4 +55,7 @@ export default {
 		visibility: visible;
 		transition: none;
 	}
+	.invalid-feedback{
+		display: block !important;
+	}
 </style>

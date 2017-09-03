@@ -41,34 +41,39 @@
 						</tr>
 					</tbody>
 				</table>
-				<b-modal id="addDisco"
-					@ok="addDiscount"
+				<b-modal
+					id="addDisco"
+					@ok="validateBeforeSubmit()"
 					title="Add new discount">
 						<b-form @submit.prevent="addDiscount" novalidate validated>
 							<b-form-group
 								label="Name:"
 								description="Discount name">
-								<b-form-input
+								<b-form-input v-validate="'required|min:3'" name="name"
 									type="text" v-model="form.name" required
 									placeholder="Discount name"></b-form-input>
+								<div class="invalid-feedback" v-show="errors.has('form.name')" ><span v-show="errors.has('name')" class="help is-danger">{{ errors.first('name') }}</span></div>
 							</b-form-group>
 							<b-form-group
 								label="Select product">
-								<b-form-select v-model="form.code" @click="getProductsList" :options="productsList" class="mb-3"></b-form-select>
+								<b-form-select v-model="form.code"  v-validate="'required'" name="code" @click="getProductsList" :options="productsList" class="mb-3" required></b-form-select>
+								<div class="invalid-feedback" v-show="errors.has('form.code')" ><span v-show="errors.has('code')" class="help is-danger">{{ errors.first('code') }}</span></div>
 							</b-form-group>
 							<b-form-group
 								label="Amount trigger:"
 								description="Minimum amount of products that launches the discount">
-								<b-form-input
+								<b-form-input v-validate="'required|numeric|min_value:0'" name="amountTrigger"
 									type="number" v-model="form.amountTrigger" required
 									placeholder="Amount trigger"></b-form-input>
+								<div class="invalid-feedback" v-show="errors.has('form.amountTrigger')" ><span v-show="errors.has('amountTrigger')" class="help is-danger">{{ errors.first('amountTrigger') }}</span></div>
 							</b-form-group>
 							<b-form-group
-								label="Discount size:"
+								label="Discount size (%):"
 								description="Given amount will be subtracted from regular product price.">
-								<b-form-input
+								<b-form-input  v-validate="'required|numeric|between:0,100'" name="discount"
 									type="number" v-model="form.discount" required
 									placeholder="Discount size"></b-form-input>
+								<div class="invalid-feedback" v-show="errors.has('form.discount')" ><span v-show="errors.has('discount')" class="help is-danger">{{ errors.first('discount') }}</span></div>
 							</b-form-group>
 							<b-form-group>
 								<h5>How many products will get discount:</h5>
@@ -81,9 +86,10 @@
 							<b-form-group v-if="!form.select"
 								label="Quanity:"
 								description="Quanity of products with discount">
-								<b-form-input
+								<b-form-input  v-validate="'required|numeric|min_value:1'" name="quanity"
 									type="number" v-model="form.quanity" required
 									placeholder="Quanity of products with discount"></b-form-input>
+								<div class="invalid-feedback" v-show="errors.has('form.quanity')" ><span v-show="errors.has('quanity')" class="help is-danger">{{ errors.first('quanity') }}</span></div>
 							</b-form-group>
 							<b-form-group v-if="!form.select">
 								<h5>After {{form.amountTrigger}} products added to cart do you want to start counting next products for and repeat discounts?</h5>
@@ -172,6 +178,17 @@ export default {
 				});
 			});
 		},
+		validateBeforeSubmit() {
+			this.$validator.validateAll().then((result) => {
+			if (result) {
+				this.addDiscount();
+			}
+				else{
+					alert("Promotion not added!");
+					this.form = new Discount();
+				}
+			});
+		}
 	}
 }
 </script>

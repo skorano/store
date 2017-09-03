@@ -27,20 +27,6 @@ export default {
 			cart: cart.data
 		}
 	}
-//	methods: {
-//		findDiscount(){
-//			this.discounts.forEach( (discount) => {
-//				if(discount.code == this.product.code) this.discount = discount;
-//				this.product.discount = this.discount;
-//				return this.discount;
-//			})
-//		}
-//	},
-//	watch: {
-//		discounts() {
-//			this.findDiscount();
-//		}
-//	}
 }
 </script>
 
@@ -48,7 +34,7 @@ export default {
 
 	input[type=number]{
 		width: 100px;
-		float:	left;
+		float: left;
 		margin-right: 5px;
 	}
 
