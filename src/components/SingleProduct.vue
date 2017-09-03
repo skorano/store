@@ -6,7 +6,7 @@
 						style="max-width: 20rem;"
 						class="mb-2">
 			<p class="card-text">
-				Price: ${{product.price}} <b-badge variant="primary" v-if="product.discount">{{product.discount.name}}</b-badge>
+				Price: ${{product.price}} <b-badge variant="success" v-if="product.discount">{{product.discount.name}}</b-badge>
 			</p>
 			<b-button variant="primary" @click="cart.add(product,Number.parseInt(qty))" :disabled="!/^[1-9]\d*$/.test(qty)">Add to cart</b-button>
 			<input type="number" v-model="qty" min="0" step="1"  class="form-control">

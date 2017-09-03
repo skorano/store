@@ -157,7 +157,8 @@ export default {
 			});
 		},
 		getProductsList(){
-			this.productsList = [{value: 'ALL', text: "All products"}];
+//			this.productsList = [{value: 'ALL', text: "All products"}];
+			this.productsList=[];
 			this.products.forEach( (product) => {
 				this.productsList.push({ value: product.code, text: "("+product.code+") "+ product.name });
 			});
