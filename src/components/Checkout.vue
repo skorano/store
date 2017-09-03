@@ -21,7 +21,7 @@
 				</tbody>
 			</table>
 		</b-row>
-		<b-form @submit.prevent="onSubmit" novalidate validated>
+		<b-form @submit.prevent="onSubmit" validated>
 		<b-row>
 				<b-col>
 					<h3>Order to:</h3>
@@ -82,7 +82,7 @@
 							Check me out
 						</b-form-checkbox>
 					</b-form-group>
-					<b-button v-b-modal.orderPlaced type="submit" variant="primary">Submit</b-button>
+					<b-button v-b-modal.orderPlaced type="submit" variant="primary" :disabled="cart.products.length<1 ">Submit</b-button>
 					<b-button type="reset" variant="secondary">Reset</b-button>
 				</b-col>
 		</b-row>
@@ -94,8 +94,37 @@
 	<b-modal ref="orderPlaced"
 		@ok="goHome"
 		ok-only
-		title="The order has been sent.">
-		Have a nice day!
+		title="The order has been sent."><br/>
+		<h3>Order summary:</h3>
+		<hr/>
+		<b>Placed: </b> {{form.date}}<br/>
+		<b>Order to:</b> {{form.name}} {{form.lastname}}<br/>
+		<b>Shipping address:</b><br/>
+		{{form.street}} {{form.number}} <br/>
+		{{form.postal}} {{form.city}}<br/>
+		<b>E-mail: </b>{{form.email}}
+		<hr/>
+		<b>Pay:</b> {{form.sum}}
+		<hr/>
+		<b>Cart:</b><br/>
+		<table class="table">
+			<thead class="thead-inverse">
+				<tr>
+					<th>#</th>
+					<th>Code</th>
+					<th>Product</th>
+					<th>Quanity</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr v-for="(product, index) in form.cart">
+					<th scope="row">{{index+1}}</th>
+					<td>{{product.code}}</td>
+					<td>{{product.name}}</td>
+					<td>{{product.qty}}</td>
+				</tr>
+			</tbody>
+		</table>
 	</b-modal>
 	</div>
 </template>
@@ -103,10 +132,25 @@
 <script>
 
 import cart from '../shared/cart.js'
-import {db} from '../shared/db';
+import {db} from '../shared/db'
+let dateFormat = require('dateformat');
+let order = db.ref('orders')
+let products = db.ref('products')
 
-let order = db.ref('orders');
-let products = db.ref('products');
+class Order {
+	constructor(name, lastname, email, street, number, postal, city, cart, date = new Date(), sum){
+	this.date = date,
+	this.name = name,
+	this.lastname = lastname,
+	this.email = email,
+	this.street = street,
+	this.number = number,
+	this.postal = postal,
+	this.city = city,
+	this.cart = cart,
+	this.sum = sum
+	}
+}
 
 export default {
 	name: 'checkout',
@@ -118,26 +162,16 @@ export default {
 		return {
 			cart: cart.data,
 			name: "",
-			formProps: {
-				novalidate: true,
-				validated: true
-			},
-			form: {
-				name:"Krzysztof",
-				lastname:"Skorupski",
-				email:"krzychu@gmail.com",
-				street:"Kowalówki",
-				number:"11",
-				postal:"61-695",
-				city:"Poznań"
-			}
+			form: new Order
 		}
 	},
 	methods: {
 		onSubmit(){
 			let that = this;
+			this.form.date = this.date();
 			order.push(this.form).then( () => {
 				that.$refs.orderPlaced.show();
+				that.cart.clear();
 			});
 		},
 		hideModal(){
@@ -145,10 +179,17 @@ export default {
 		},
 		goHome(){
 				this.$router.push({ path: '/' });
+		},
+		date(){
+			let date = new Date();
+			let local = new Date(date);
+			local.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+			return local.toJSON().slice(0, 10);
 		}
 	},
 	created(){
 		this.form.cart = this.cart.products;
+		this.form.sum = this.cart.summary;
 	}
 }
 </script>

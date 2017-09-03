@@ -1,6 +1,6 @@
 <template>
 	<div id="app">
-		<navbar></navbar>
+		<navbar :auth="isAuth"></navbar>
 		<router-view></router-view>
 	</div>
 </template>
@@ -10,9 +10,29 @@
 
 import Navbar from './components/Navbar'
 
+import {firebase} from './shared/db';
+
+
+let db = firebase.db;
+
 export default {
 	name: 'app',
-	components: { Navbar }
+	components: { Navbar },
+	data(){
+		return{
+			isAuth: false
+		}
+	},
+	methods:{
+		checkAuth(){
+			console.log("CHECKING FROM APP!");
+			console.log(firebase.auth().currentUser);
+			this.isAuth = firebase.auth().currentUser;
+		}
+	},
+	mounted(){
+		this.checkAuth();
+	}
 }
 </script>
 
@@ -23,5 +43,16 @@ export default {
 	}
 	.modal{
 		display: block;
+	}
+	tr .remove {
+		visibility: hidden;
+		transition: none;
+	}
+	tr:hover{
+		background-color: #eee;
+	}
+	tr:hover .remove {
+		visibility: visible;
+		transition: none;
 	}
 </style>

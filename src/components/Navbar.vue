@@ -8,7 +8,19 @@
 	<b-collapse is-nav id="nav_collapse">
 
 		<b-nav is-nav-bar>
-			<b-nav-item @click="goto('/')">Products</b-nav-item>
+			<b-button @click="goto('/')" size="sm" variant="outline-primary">Go to store!</b-button>
+			<div class="dropdown" @click="checkAuth">
+				<button class="btn btn-sm btn-outline-primary dropdown-toggle right" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+					Admin panel
+				</button>
+				<div v-if="toggleMenu" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+					<b-dropdown-item v-if="isAuth" @click="goto('admin')">Orders</b-dropdown-item>
+					<b-dropdown-item v-if="isAuth" @click="goto('promo')">Discounts</b-dropdown-item>
+					<b-dropdown-item v-if="isAuth" @click="signout">Sign out</b-dropdown-item>
+					<b-dropdown-item v-if="!isAuth" @click="goto('login')">Log in</b-dropdown-item>
+					<b-dropdown-item v-if="!isAuth" @click="goto('signup')">Sign in</b-dropdown-item>
+				</div>
+			</div>
 
 		</b-nav>
 
@@ -31,22 +43,10 @@
 			</div>
 -->
 
-
-			<b-dropdown id="ddown2" variant="success" split class="m-md-2" @click="goto('cart')" :text="'My cart (' + cart.productsQty() + ') ' + cart.summary">
+			<b-dropdown id="ddown2" variant="success" split class="m-md-2" @click="goto('cart')" :text="'My cart (' + cart.productsQty + ') ' + cart.summary">
 				<b-dropdown-item  @click="goto('cart')">Show my cart</b-dropdown-item>
 				<b-dropdown-item  @click="goto('checkout')" v-if="cart.products.length">Checkout</b-dropdown-item>
 			</b-dropdown>
-
-		<b-dropdown id="ddown1" text="Actions" variant="primary" class="m-md-2" right >
-				<b-dropdown-item v-if="auth" @click="goto('admin')">Orders</b-dropdown-item>
-				<b-dropdown-item v-if="auth" @click="goto('promo')">Discounts</b-dropdown-item>
-				<b-dropdown-item v-if="auth" @click="goto('login')">Log offf</b-dropdown-item>
-				<b-dropdown-item v-if="!auth" @click="goto('login')">Log in</b-dropdown-item>
-				<b-dropdown-item v-if="!auth" @click="goto('signup')">Sign in</b-dropdown-item>
-			</b-dropdown>
-
-
-
 		</b-nav>
 
 	</b-collapse>
@@ -57,6 +57,7 @@
 <script>
 
 import cart from '../shared/cart.js'
+import {db} from '../shared/db';
 import {firebase} from '../shared/db';
 
 
@@ -64,6 +65,8 @@ export default {
 	name: 'navbar',
 	data () {
 		return {
+			isAuth: false,
+			toggleMenu: true,
 			msg: 'Navigation',
 			cart: cart.data
 		}
@@ -72,8 +75,22 @@ export default {
 		goto(page){
 			this.$router.push({ path: page })
 		},
-		auth(){
-			return firebase.auth().currentUser;
+		checkAuth(){
+			this.isAuth = firebase.auth().currentUser;
+			this.toggleMenu= !this.toggleMenu;
+		},
+		signout(){
+			firebase.auth().signOut().then(
+				() => { this.$router.replace('login') }
+			);
+		}
+	},
+	mounted(){
+		 this.checkAuth();
+	},
+	watch:{
+		dbconnection(){
+			console.log("DB!");
 		}
 	}
 }
@@ -87,5 +104,8 @@ export default {
 	}
 	nav{
 		margin-bottom: 20px;
+	}
+	.dropdown-menu{
+		display:block;
 	}
 </style>

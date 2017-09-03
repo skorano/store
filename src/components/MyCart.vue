@@ -35,7 +35,11 @@
 								</span>
 							</div>
 						</td>
-						<td><button type="button" class="btn btn-outline-danger" @click="">X</button></td>
+						<td>
+							<b-button size="sm" variant="outline-danger" class="remove" @click="removeProduct(product)">
+								X
+							</b-button>
+						</td>
 					</tr>
 					<tr v-if="!cart.products.length">
 						<td colspan="5"> You do not have any products in your cart. </td>
@@ -79,7 +83,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 	tr th:nth-child(4){
 		width: 160px;
 	}

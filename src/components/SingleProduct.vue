@@ -16,9 +16,6 @@
 <script>
 
 import cart from '../shared/cart.js'
-import {db} from '../shared/db';
-
-let discounts = db.ref('discounts');
 
 export default {
 	name: 'single-product',

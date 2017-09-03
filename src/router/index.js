@@ -52,7 +52,7 @@ let router = new Router({
 			name: 'promo',
 			component: Promo,
 			meta: {
-				requiresAuth: false
+				requiresAuth: true
 			}
 		}
 	]
