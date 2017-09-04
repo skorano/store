@@ -184,7 +184,7 @@ export default {
 				this.$router.push({ path: '/' });
 		},
 		date(){
-			let date = new Date();
+			let date = new Date;
 			let local = new Date(date);
 			local.setMinutes(date.getMinutes() - date.getTimezoneOffset());
 			return local.toJSON().slice(0, 10);

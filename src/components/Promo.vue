@@ -126,7 +126,6 @@ class Discount {
 	}
 }
 
-let discounts = db.ref('discounts');
 let orders = db.ref('orders');
 let products = db.ref('products');
 
@@ -134,8 +133,7 @@ export default {
 	name: 'promo',
 	firebase: {
 		orders: orders,
-		products: products,
-		discounts: discounts
+		products: products
 	},
 	data(){
 		return{
@@ -185,7 +183,7 @@ export default {
 			}
 				else{
 					alert("Promotion not added!");
-					this.form = new Discount();
+					this.form = new Discount;
 				}
 			});
 		}

@@ -35,7 +35,7 @@ class Cart {
 	}
 }
 
-let cart = new Cart();
+let cart = new Cart;
 
 let cartOperations = {
 	find (code){
