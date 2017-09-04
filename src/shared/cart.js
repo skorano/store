@@ -38,7 +38,7 @@ class Cart {
 let cart = new Cart();
 
 let cartOperations = {
-	find: function(code){
+	find (code){
 		if(cart.products.length>0){
 			for(let i=0;i<cart.products.length;i++){
 				if(cart.products[i].code === code){
@@ -48,7 +48,7 @@ let cartOperations = {
 		}
 		return null;
 	},
-	update: function(product, qty){
+	update (product, qty){
 		let item = cartOperations.find(product.code);
 		if(item){
 			let index = cart.products.indexOf(item);
@@ -57,7 +57,7 @@ let cartOperations = {
 			cartOperations.calculate();
 		}
 	},
-	add: function(product, qty){
+	add (product, qty){
 		let item = cartOperations.find(product.code);
 		let products = cart.products;
 		if(item){
@@ -79,7 +79,7 @@ let cartOperations = {
 		}
 		cartOperations.calculate();
 	},
-	removeProduct: function(product){
+	removeProduct (product){
 		let item = cartOperations.find(product.code);
 		if(item){
 			let index = cart.products.indexOf(item);
@@ -87,11 +87,11 @@ let cartOperations = {
 			cartOperations.calculate();
 		}
 	},
-	getQty: function(code) {
+	getQty (code) {
 		let item = cartOperations.find(code);
 		return item.qty || 0;
 	},
-	calculate: function(){
+	calculate (){
 		let total = 0;
 		for(let item of cart.products){
 			if(item.discount && item.qty >= item.discount.amountTrigger){
