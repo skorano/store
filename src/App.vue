@@ -25,8 +25,6 @@ export default {
 	},
 	methods:{
 		checkAuth(){
-			console.log("CHECKING FROM APP!");
-			console.log(firebase.auth().currentUser);
 			this.isAuth = firebase.auth().currentUser;
 		}
 	},

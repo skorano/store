@@ -1,7 +1,7 @@
 <template>
 	<b-navbar toggleable="md" variant="light">
 	<b-nav-toggle target="nav_collapse"></b-nav-toggle>
-	<b-navbar-brand>Store!</b-navbar-brand>
+	<b-navbar-brand @click="cart.clear">Store!</b-navbar-brand>
 	<b-collapse is-nav id="nav_collapse">
 		<b-nav is-nav-bar>
 			<b-button @click="goto('/')" size="sm" variant="outline-primary">Go to store!</b-button>

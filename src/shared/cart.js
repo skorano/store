@@ -1,39 +1,41 @@
-let cart = {
-	products: [],
-	summary: 0,
-	productsQty: 0,
-	countProductsQty(){
-		let qty =0;
-		for (let item of this.products) {
-			qty += item.qty;
-		}
-		this.productsQty = qty;
-	},
-	add(product, qty){
-		return cartOperations.add(product, qty);
-	},
-	remove(product, qty){
-		return cartOperations.add(product, -1);
-	},
-	removeProduct(product){
-		return cartOperations.removeProduct(product);
-	},
-	update(product, qty){
-		return cartOperations.update(product, qty);
-	},
-	clear(){
-		this.products = [],
-		this.summary = 0,
-		this.productsQty = 0
-	}
-}
-
 const currency = new Intl.NumberFormat('en-US', {
 	style: 'currency',
 	currency: 'USD',
 	minimumFractionDigits: 2,
 	maximumFractionDigits: 2
 });
+
+class Cart {
+	constructor(){
+		this.products = [];
+		this.summary = 0;
+		this.productsQty = 0;
+	}
+	countProductsQty(){
+		let qty =0;
+		for (let item of this.products) {
+			qty += item.qty;
+		}
+		this.productsQty = qty;
+	}
+	add(product, qty){
+		return cartOperations.add(product, qty);
+	}
+	remove(product, qty){
+		return cartOperations.add(product, -1);
+	}
+	removeProduct(product){
+		return cartOperations.removeProduct(product);
+	}
+	update(product, qty){
+		return cartOperations.update(product, qty);
+	}
+	clear(){
+		cartOperations.clear();
+	}
+}
+
+let cart = new Cart();
 
 let cartOperations = {
 	find: function(code){
@@ -52,17 +54,17 @@ let cartOperations = {
 			let index = cart.products.indexOf(item);
 			let product = cart.products[index];
 			product.qty = qty;
-			product.discount = product.discount;
 			cartOperations.calculate();
 		}
 	},
 	add: function(product, qty){
 		let item = cartOperations.find(product.code);
+		let products = cart.products;
 		if(item){
-			let index = cart.products.indexOf(item);
-			let prod = cart.products[index];
+			let index = products.indexOf(item);
+			let prod = products[index];
 			if(prod.qty + qty <= 0){
-					cart.products.splice(index,1);
+					products.splice(index,1);
 			}
 			else{
 				prod.qty += qty;
@@ -73,7 +75,7 @@ let cartOperations = {
 			product.discount = product.discount || {};
 			product.qty = qty;
 			delete product[".key"];
-			cart.products.push(product);
+			products.push(product);
 		}
 		cartOperations.calculate();
 	},
@@ -87,12 +89,7 @@ let cartOperations = {
 	},
 	getQty: function(code) {
 		let item = cartOperations.find(code);
-		if(item){
-			return item.qty;
-		}
-		else{
-			return 0;
-		}
+		return item.qty || 0;
 	},
 	calculate: function(){
 		let total = 0;
@@ -123,6 +120,11 @@ let cartOperations = {
 		}
 		cart.countProductsQty();
 		cart.summary = currency.format(total);
+	},
+	clear(){
+		cart.products = [];
+		cart.summary = 0;
+		cart.productsQty = 0;
 	}
 }
 export default {
