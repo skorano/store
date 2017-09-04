@@ -1,7 +1,9 @@
 <template>
 	<b-container class="bv-example-row">
 		<b-card-group deck>
-			<single-product v-for="product in products" :item="product"></single-product>
+			<single-product v-for="product in products" :item="product"
+					 v-bind:data="product"
+					 v-bind:key="product.code"></single-product>
 	</b-card-group>
 	</b-container>
 </template>
