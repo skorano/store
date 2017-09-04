@@ -1,6 +1,6 @@
 <template>
 	<div id="app">
-		<navbar :auth="isAuth"></navbar>
+		<navbar></navbar>
 		<router-view></router-view>
 	</div>
 </template>
